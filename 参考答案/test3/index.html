@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>拖拽放置</title>
+    <link rel="stylesheet" href="./index.css">
+    <script src="./main.js"></script>
+</head>
+
+<body>
+    <!--         
+        拖拽示例 
+        <div style="position: absolute;width: 50px;height: 50px;background-color: aqua;left:10px;top:10px;"></div> 
+        <script>     
+            var div = document.querySelector('div');
+            var disX, disY;
+            div.onmousedown = function (e) {
+                var {left,top} = e.target.getBoundingClientRect();
+                disX = e.pageX - left;
+                disY = e.pageY - top;
+                document.onmousemove = function (e) {
+                    var event = e || window.event;
+                    div.style.left = e.pageX - disX + "px";
+                    div.style.top = e.pageY - disY + "px ";
+                }
+                document.onmouseup = function () {
+                    document.onmousemove = null;
+                }
+            } 
+        </script>
+    -->
+    <div id="app">
+        <div class="left">
+            <h3>箱子</h3>
+            <!-- <div class="shape"> -->
+            <div class="rectangle" id="shape"></div>
+            <!-- <div class="circle"></div> -->
+            <!-- </div> -->
+        </div>
+        <div class="right">
+            <h3>箱子摆放区</h3>
+            <div class="design"></div>
+        </div>
+        <div id="moving"></div>
+    </div>
+    <script>
+        init(document.querySelector('#app'));
+    </script>
+</body>
+
+</html>
