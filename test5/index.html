@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./index.css">
+    <script src="./main.js"></script>
+</head>
+
+<body>
+    <!-- 示例 -->
+    <div class="wrapper">
+        <details>
+            <summary>目录1</summary>
+            <details>
+                <summary>目录1-1</summary>
+                <details>
+                    <summary>目录1-1-1</summary>
+                    <details>
+                        <summary>目录1-1-1-1</summary>
+                    </details>
+                </details>
+            </details>
+            <details>
+                <summary>目录1-2</summary>
+            </details>
+        </details>
+        <details>
+            <summary>目录2</summary>
+        </details>
+    </div>
+
+    <div id="app" class="wrapper"></div>
+    <script>
+        init(data,document.querySelector('#app'));
+    </script>
+</body>
+
+</html>

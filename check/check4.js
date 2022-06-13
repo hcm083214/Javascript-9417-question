@@ -1,25 +1,25 @@
 const puppeteer = require("puppeteer");
 try {
     (async function () {
-        // const browser = await puppeteer.launch({
-        //     args: ["--no-sandbox", "--disable-setuid-sandbox"],
-        // });
-        // 本地测试
         const browser = await puppeteer.launch({
-            headless: false
+            args: ["--no-sandbox", "--disable-setuid-sandbox"],
         });
+        // 本地测试
+        // const browser = await puppeteer.launch({
+        //     headless: false
+        // });
         const page = await browser.newPage();
         await page.setViewport({ width: 1200, height: 750 });
 
 
-        // await page.goto("http://127.0.0.1:8080/test4", {
-        //     waitUntil: "networkidle0", //不在有网络连接时候触发
-        // });
-
-        // 本地测试
-        await page.goto("http://127.0.0.1:5500/test4/", {
+        await page.goto("http://127.0.0.1:8080/test4", {
             waitUntil: "networkidle0", //不在有网络连接时候触发
         });
+
+        // 本地测试
+        // await page.goto("http://127.0.0.1:5500/test4/", {
+        //     waitUntil: "networkidle0", //不在有网络连接时候触发
+        // });
         await page.mouse.click(50, 20);
         // 判断是否有弹窗：弹窗是否加入到页面中
         const isAdd = await page.$('.modal');
