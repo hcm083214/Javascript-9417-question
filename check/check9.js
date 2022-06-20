@@ -37,7 +37,7 @@ try {
                 isResultExpecting(logResult[i], result);
             }
         })
-        await console.log(logResult)
+        await browser.close();
     })();
 } catch (error) {
 

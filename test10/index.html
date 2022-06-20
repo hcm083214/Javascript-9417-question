@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+    <!--   示例 
+    <table>
+        <tr>
+            <td class="zero">0</td>
+            <td class="one">1</td>
+            <td class="two">2</td>
+        </tr>
+        <tr>
+            <td class="three">3</td>
+            <td class="four">4</td>
+            <td class="five">5</td>
+        </tr>
+        <tr>
+            <td class="six">6</td>
+            <td class="seven">7</td>
+            <td class="eight">8</td>
+        </tr>
+    </table> 
+    -->
+
+    <div class="wrapper" id="app">
+    </div>
+    <script src="./main.js"></script>
+    <script>
+        const initData = new Array(9).fill('').map(() => ['', '', '', '', '', '', '', '', ''])
+        render(app, initData);
+        init(document.querySelector('#app'))
+    </script>
+</body>
+
+</html>
