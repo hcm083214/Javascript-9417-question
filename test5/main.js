@@ -60,6 +60,7 @@ const data = [{
 }];
 
 /*  数据转换后的格式如下：
+data2 =
 [
     {
         id: 0, pid: -1, title: '微云', children: [
@@ -87,23 +88,23 @@ const data = [{
 ] 
 */
 
+/**
+ * @description: 将一般的对象数组转变为树形结构的数组,比如如上 data 转变成 data1
+ * @param {Array} data 需要转换的数组
+ * @return {Array} 转换后的数组
+ */
 function translateData(data) {
-    const map = {};
-    data.forEach(item => {
-        map[item.id] = item
-    });
     const result = [];
-    data.forEach(item => {
-        const parent = map[item.pid];
-        if (parent) {
-            parent.children = parent.children || [];
-            parent.children.push(item)
-        } else {
-            result.push(item)
-        }
-    })
+    // TODO 请在如下位置补全代码,实现要求的功能
+
     return result
 }
+
+/**
+ * @description: 将数据转变为渲染成 DOM ，并挂载到页面
+ * @param {*} data 转换后的树形数组
+ * @param {*} root 需要挂载的节点
+ */
 function render(data, root) {
     data.forEach(item => {
         const details = document.createElement('details');

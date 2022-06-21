@@ -1,6 +1,8 @@
-const {translateData} = require('./main.js');
-// 本地测试
-// const { translateData } = require('../test5/main.js');
+/* 
+    id:表示当前数据的id
+    pid:表示数据的父级id
+    title:表示标题名称
+*/
 const data = [{
     id: 0,
     pid: -1,
@@ -56,7 +58,8 @@ const data = [{
     pid: 3,
     title: "夜曲"
 }];
-const dataFormat = translateData(data);
+
+/*  数据转换后的格式如下：
 [
     {
         id: 0, pid: -1, title: '微云', children: [
@@ -81,22 +84,44 @@ const dataFormat = translateData(data);
             }
         ]
     }
-]
-let isFound = false;
-function getDeepFloor(data) {
+] 
+*/
+
+function translateData(data) {
+    const map = {};
     data.forEach(item => {
-        if (item.id === 3 && item.children.length === 3) {
-            isFound = true;
+        map[item.id] = item
+    });
+    const result = [];
+    data.forEach(item => {
+        const parent = map[item.pid];
+        if (parent) {
+            parent.children = parent.children || [];
+            parent.children.push(item)
         } else {
-            item.children && getDeepFloor(item.children);
+            result.push(item)
         }
     })
+    return result
 }
-getDeepFloor(dataFormat);
-if (isFound) {
-    console.log('测试通过');
-} else {
-    console.log('测试不通过');
-    process.exit(1);
+function render(data, root) {
+    data.forEach(item => {
+        const details = document.createElement('details');
+        const summary = document.createElement('summary');
+        summary.innerText = item.title;
+        details.appendChild(summary);
+        root.appendChild(details);
+        if (item.children && item.children.length > 0) {
+            render(item.children, details)
+        } 
+    })
 }
+function init(data, root) {
+    const dataFormat = translateData(data);
+    render(dataFormat, root);
+}
+
+module.exports = {
+    translateData
+} 
 
