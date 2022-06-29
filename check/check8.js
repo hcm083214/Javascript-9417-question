@@ -1,4 +1,6 @@
-const { requestControl } = require('../test8/main.js');
+const { requestControl } = require('./main.js');
+// 本地环境
+//const { requestControl } = require('../test8/main.js');
 let i = 0;
 function isResultExpecting(expect, result) {
     let isPass = false

@@ -1,23 +1,23 @@
 const puppeteer = require("puppeteer");
 try {
     (async function () {
-        // const browser = await puppeteer.launch({
-        //     args: ["--no-sandbox", "--disable-setuid-sandbox"],
-        // });
-        // 本地测试
         const browser = await puppeteer.launch({
-            headless: false
+            args: ["--no-sandbox", "--disable-setuid-sandbox"],
         });
+        // 本地测试
+        // const browser = await puppeteer.launch({
+        //     headless: false
+        // });
         const page = await browser.newPage();
         await page.setViewport({ width: 1200, height: 750 });
-        // await page.goto("http://127.0.0.1:8080/test7", {
-        //     waitUntil: "networkidle0", //不在有网络连接时候触发
-        // });
-
-        // 本地测试
-        await page.goto("http://127.0.0.1:5500/test7/", {
+        await page.goto("http://127.0.0.1:8080/test7", {
             waitUntil: "networkidle0", //不在有网络连接时候触发
         });
+
+        // 本地测试
+        // await page.goto("http://127.0.0.1:5500/test7/", {
+        //     waitUntil: "networkidle0", //不在有网络连接时候触发
+        // });
         await page.keyboard.press('ArrowRight');
         const sleep = function (times) {
             return new Promise(resolve => {

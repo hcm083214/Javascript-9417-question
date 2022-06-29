@@ -1,4 +1,3 @@
-
 let snake; // 数组，保存蛇的大小和位置
 let egg;  // 对象，保存蛋的大小和位置
 let isEnd = false; // 游戏是否结束的标志位
@@ -130,18 +129,33 @@ function snakeEatEgg(width, height) {//在蛇尾部生成一个位置
         finallySnakes = { ...next, top: next.top + height }
     }
     snake.push(finallySnakes);
-
+    console.log("🚀 ~ file: main.js ~ line 132 ~ snakeEatEgg ~ snake", snake)
 }
 
 /**
- * @description: 定义蛇头下一步移动的位置，蛇身跟着蛇头移动，蛇头同时判断是否吃到蛋或者是否撞墙，吃到蛋在蛇尾添加一格，重新生成蛋的位置
+ * @description: 定义蛇头下一步移动的位置，蛇身跟着蛇头移动，蛇头同时判断是否吃到蛋或者是否撞墙
  * @param {*} width  地图等分后每个小块的宽
  * @param {*} height  地图等分后每个小块的高
  * @param {*} direction 蛇头移动的方向
  */
 function move(width, height, direction) {
-    // todo 请在下方补充代码，完成描述中的功能
-
+    let snakeHead;
+    if (direction === 'right') {
+        snakeHead = { ...snake[0], left: snake[0].left + width, }
+    } else if (direction === 'left') {
+        snakeHead = { ...snake[0], left: snake[0].left - width, }
+    } else if (direction === 'up') {
+        snakeHead = { ...snake[0], top: snake[0].top - height, }
+    } else if (direction === 'down') {
+        snakeHead = { ...snake[0], top: snake[0].top + height, }
+    }
+    snake.unshift(snakeHead);
+    snake.pop();
+    // 蛇吃蛋判断，吃到蛋在蛇尾添加一格，重新生成蛋的位置
+    if (isArriveEgg()) {
+        snakeEatEgg(width, height);
+        eggConfig(width, height);
+    }
 }
 /**
  * @description: 判断蛇是否吃到蛋

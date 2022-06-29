@@ -1,4 +1,4 @@
-// 使用 promise 模拟网络请求 + setTimeout 模拟服务端相应，3000ms后服务器返回结果
+// 使用 promise + setTimeout 模拟网络请求和结果返回
 function createRequest(i) {
     return function () {
         return new Promise((resolve, reject) => {
@@ -25,8 +25,21 @@ class RequestControl {
         this.requestQueue.push(request);
     }
     run() {
-        // todo 控制同一时间可以发起最大的最大请求数 = max,每发送一次请求占用一次发起次数，当 max 值为0时不发送请求
-
+        let lens = this.requestQueue.length;
+        if(!lens) return
+        let min = Math.min(this.max, lens);
+        for (let i = 0; i < min; i++) {
+            this.max--;
+            let request = this.requestQueue.shift();
+            request().then(res => {
+                console.log('success',res)
+            }).catch(err => {
+                console.log('fail',err)
+            }).finally(() => {
+                this.max++;
+                this.run();
+            })
+        }
     }
 }
 
