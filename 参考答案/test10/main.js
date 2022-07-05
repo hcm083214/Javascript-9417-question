@@ -86,7 +86,7 @@ function numberToString(num) {
 function render(mineArr) {
     const trs = mineArr.reduce((templateStr, mineItemArr, row) => {
         const tds = mineItemArr.reduce((str, item, col) => str +
-        `
+            `
         <td class="${numberToString(item)}" id='${row === 8 && col === 8 && 'sel'}' data-row=${row} data-col=${col} data-raw=${item}>
             ${item == 'x' ? '' : ((item == 0 && item != 'x') ? '' : item)}
         </td>
@@ -98,11 +98,9 @@ function render(mineArr) {
     root.innerHTML = table;
 }
 
-/**
- * @description: 点到雷游戏结束
- */
 function endRender() {
     const div = document.createElement('div');
+
     div.innerHTML = `<div class="cover">
         <div class="content">游戏结束</div>
     </div>`;
@@ -148,15 +146,14 @@ function getAroundAndCount(arr, { row, col }) {
 }
 // 定义一个二维数组，初始时默认为 false,扫雷数组的某项被确认后为 true
 const flagData = new Array(9).fill('').map(() => new Array(9).fill(false));
-/**
- * @description: 扫雷算法，碰到数字就停止
- * @param {*} arr 扫雷数组
- * @param {*} row 被点击的行
- * @param {*} col 被点击的列
- */
 function getMineArr(arr, { row, col }) {
-    //TODO 请在下方补充代码，完成要求的功能
+    if (flagData[row][col]) return
+    flagData[row][col] = true;
 
+    const { positionWithoutMineArr, count } = getAroundAndCount(arr, { row, col });
+    positionWithoutMineArr.forEach((around) => {
+        count == 0 && getMineArr(arr, around)
+    })
 
 }
 

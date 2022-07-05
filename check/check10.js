@@ -1,24 +1,23 @@
 const puppeteer = require("puppeteer");
-const { hideMineArr } = require('../test10/main.js')
 try {
     (async function () {
-        // const browser = await puppeteer.launch({
-        //     args: ["--no-sandbox", "--disable-setuid-sandbox"],
-        // });
-        // 本地测试
         const browser = await puppeteer.launch({
-            headless: false
+            args: ["--no-sandbox", "--disable-setuid-sandbox"],
         });
+        // 本地测试
+        // const browser = await puppeteer.launch({
+        //     headless: false
+        // });
         const page = await browser.newPage();
         await page.setViewport({ width: 1200, height: 750 });
-        // await page.goto("http://127.0.0.1:8080/test10", {
-        //     waitUntil: "networkidle0", //不在有网络连接时候触发
-        // });
-
-        // 本地测试
-        await page.goto("http://127.0.0.1:5500/test10/", {
+        await page.goto("http://127.0.0.1:8080/test10", {
             waitUntil: "networkidle0", //不在有网络连接时候触发
         });
+
+        // 本地测试
+        // await page.goto("http://127.0.0.1:5500/test10/", {
+        //     waitUntil: "networkidle0", //不在有网络连接时候触发
+        // });
         const correctResult = [
             ['', '', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', '', ''],
@@ -69,6 +68,7 @@ try {
                 isResultExpecting(correctResult[i][j], result[i][j]);
             }
         }
+        await browser.close();
     })();
 } catch (error) {
 
