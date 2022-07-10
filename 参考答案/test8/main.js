@@ -1,12 +1,12 @@
-// 使用 promise + setTimeout 模拟网络请求和结果返回
+// 使用 promise 模拟请求 + 3000ms后完成得到发射后结果
 function createRequest(i) {
     return function () {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 if (Math.random() >= 0.05) {
-                    resolve(i);
+                    resolve(`第${i}曲率飞船达到光速，成功逃离`);
                 } else {
-                    reject(i);
+                    reject(`第${i}曲率飞船出现故障，无法达到光速`);
                 }
             }, 3000)
         })

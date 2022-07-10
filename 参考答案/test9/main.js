@@ -1,17 +1,17 @@
 async function fn1(next) {
-    arrProxy[0] = "fn1";
+    arrProxy[0] = "看到西瓜";
     await next();
-    arrProxy[4] = "end fn1";
+    arrProxy[4] = "装好西瓜";
 }
 async function fn2(next) {
-    arrProxy[1] = "fn2";
+    arrProxy[1] = "看到芝麻";
     await delay();
     await next();
-    arrProxy[3] = "end fn2";
+    arrProxy[3] = "拾起芝麻";
 }
 
 function fn3() {
-    arrProxy[2] = "fn3";
+    arrProxy[2] = "掏出麻袋";
 }
 
 function delay() {
