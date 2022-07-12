@@ -12,7 +12,11 @@
 
 <body>
     <div class="wrapper">
-        <button class="btn btn-large">点击打开信封</button>
+        <button class="btn btn-large">点击弹出对话框，输入咒语</button>
+    </div>
+    <div id="door">
+        <div class="doors"></div>
+        <div class="doors"></div>
     </div>
     <script>
         init()
@@ -21,7 +25,7 @@
     <!-- 弹窗的结构：必须使用
     <div class="modal">
         <div class="message-box">
-            <div class="message-header">输入想对未来的自己说的话</div>
+            <div class="message-header">请输入咒语</div>
             <div class="message-body">
                 <input type="text">
             </div>

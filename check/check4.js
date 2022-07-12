@@ -11,7 +11,6 @@ try {
         const page = await browser.newPage();
         await page.setViewport({ width: 1200, height: 750 });
 
-
         await page.goto("http://127.0.0.1:8080/test4", {
             waitUntil: "networkidle0", //不在有网络连接时候触发
         });
@@ -20,7 +19,12 @@ try {
         // await page.goto("http://127.0.0.1:5500/test4/", {
         //     waitUntil: "networkidle0", //不在有网络连接时候触发
         // });
-        await page.mouse.click(50, 20);
+        const { left:btnLeft, top:btnTop } = await page.$eval('.btn', (el) => {
+            const { left, top } = el.getBoundingClientRect();
+            return { left, top }
+        });
+        await page.mouse.click(btnLeft + 5, btnTop + 5);
+        // await page.mouse.click(50, 20);
         // 判断是否有弹窗：弹窗是否加入到页面中
         const isAdd = await page.$('.modal');
         if (isAdd) {
@@ -33,7 +37,7 @@ try {
             const { left, top, height, width } = el.getBoundingClientRect()
             return { left, top, height, width, lens: el.length };
         });
-        let value = '填入的字符';
+        let value = '芝麻开门';
         await page.type('.message-body input', value);
         await page.on('console', (msg) => {
             if (msg._text === value) {

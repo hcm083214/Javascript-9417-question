@@ -1,7 +1,12 @@
+const incantations = "芝麻开门";
 function init(el) {
     document.querySelector('.wrapper .btn').addEventListener('click', () => {
         mPrompt().then(res => {
-            console.log(res)
+            console.log(res);
+            if(res === incantations){
+                document.querySelectorAll('#door .doors')[0].classList.add('door-left');
+                document.querySelectorAll('#door .doors')[1].classList.add('door-right');
+            }
         }).catch(err => {
             console.log(err)
         })
@@ -16,7 +21,7 @@ function mPrompt() {
     const template = `
         <div class="modal">
             <div class="message-box">
-                <div class="message-header">输入想对未来的自己说的话</div>
+                <div class="message-header">请输入咒语</div>
                 <div class="message-body">
                     <input type="text">
                 </div>
@@ -27,6 +32,6 @@ function mPrompt() {
             </div>
         </div>
     `;
+    const div = document.createElement('div');
     // 请在下方补充代码完成要求的功能
-    
 }
