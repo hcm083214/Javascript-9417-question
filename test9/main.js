@@ -49,7 +49,18 @@ function compose(middleware) {
         //2. `compose` 函数执行会执行中间件数组中的第一个函数
         //3. 第一个函数中有调用 `next` 函数，会执行中间件数组的第二个函数，函数执行完成后会接下来执行第一个函数剩下的代码，如此循环
         // TODO : 
-
+        const dispatch = function (i) {
+            // 获取中间件中的待执行函数
+            const middlewareFn = middleware[i];
+            // 将 next 函数作为参数传递给中间件中的待执行函数
+            return new Promise((resolve) => {
+                resolve(middlewareFn(function next() {
+                    // next 函数的作用执行下一个函数
+                    return dispatch(i + 1);
+                }))
+            })
+        }
+        return dispatch(0);
     }
 }
 

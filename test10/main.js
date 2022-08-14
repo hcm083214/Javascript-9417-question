@@ -154,7 +154,7 @@ const flagData = new Array(9).fill('').map(() => new Array(9).fill(false));
  * @param {*} row 被点击的行
  * @param {*} col 被点击的列
  */
-function getMineArr(arr, { row, col }) {
+function mineSweeperAlgorithms(arr, { row, col }) {
     //TODO 请在下方补充代码，完成要求的功能
 
 
@@ -170,7 +170,7 @@ function initEvent() {
             endRender();
             return
         }
-        getMineArr(arr, { row, col })
+        mineSweeperAlgorithms(arr, { row, col })
         hideMineArr = arr.map(arrs => arrs.map(item => item === 'X' ? '' : item))
         render(hideMineArr);
         initEvent();

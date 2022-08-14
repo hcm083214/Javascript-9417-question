@@ -44,7 +44,7 @@ try {
                 isResultExpecting(li, logResult[index])
             })
         }
-        isPass(lis1, ['fn1', 'fn2'])
+        isPass(lis1, ['看到西瓜', '看到芝麻'])
 
         const sleep = function (times) {
             return new Promise((resolve) => {
@@ -56,7 +56,7 @@ try {
         await sleep(3000);
 
         const lis2 = await page.$$eval('li', (lis) => Array.from(lis).map(li => li.innerText))
-        isPass(lis2, ['fn1', 'fn2', 'fn3', 'end fn2', 'end fn1'])
+        isPass(lis2, ['看到西瓜', '看到芝麻', '掏出麻袋', '拾起芝麻', '装好西瓜'])
         await browser.close();
     })();
 } catch (error) {
