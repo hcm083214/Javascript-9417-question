@@ -59,7 +59,7 @@ const data = [{
     title: "夜曲"
 }];
 
-/*  数据转换后的格式如下：
+
 [
     {
         id: 0, pid: -1, title: '微云', children: [
@@ -85,7 +85,7 @@ const data = [{
         ]
     }
 ] 
-*/
+
 
 function translateData(data) {
     const map = {};

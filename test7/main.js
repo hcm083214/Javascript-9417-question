@@ -1,211 +1,114 @@
-
-let snake; // 数组，保存蛇的大小和位置
-let egg;  // 对象，保存蛋的大小和位置
-let isEnd = false; // 游戏是否结束的标志位
-let rate = 30;//表示分成多少格子
-let timer; // 定时器，用来开启蛇移动
-let App;  // DOM结构挂载的节点
-let snakeSpeed = 5; // 蛇的移动速度，越大越快
-let direction; // 蛇的移动方向
-
-/**
- * @description: 根据地图的大小配置初始化蛇的大小和位置
- * @param {number} width 地图等分后每个小块的宽
- * @param {number} height 地图等分后每个小块的高
- */
-function snakeConfig(width, height) {
-    // 蛇头在第一位，第二位是蛇身,第三位是蛇尾，初始化设置
-    const snakeInit = [{ left: 2, top: 0, width: 1, height: 1 },
-    { left: 1, top: 0, width: 1, height: 1 },
-    { left: 0, top: 0, width: 1, height: 1 }];
-    snake = snakeInit.map(item => {
-        return {
-            left: item.left * width,
-            top: item.top * height,
-            width: item.width * width,
-            height: item.height * height,
-        }
-    })
-}
-
-/**
- * @description: 根据地图的等分数产生0-等分数的随机数
- * @param {number} rate 地图的等分数
- * @return {number} 随机数
- */
 function getRandom(rate) {
     return Math.floor(Math.random() * rate)
 }
-/**
- * @description: (随机)生成蛋的位置
- * @param {*} width 地图等分后每个小块的宽
- * @param {*} height 地图等分后每个小块的高
- */
-function eggConfig(width, height) {
-    // 下面一行代码为随机生成蛋的位置，为了测试方便改为固定在 (8,0) 位置生成蛋，如果想要实现完整版的功能请将代码 copy 到本地进行
-    // let eggInit = { left: getRandom(rate), top: getRandom(rate), width: 1, height: 1 }
-    let eggInit = { left: 8, top: 0, width: 1, height: 1 };
-    egg = {
-        left: eggInit.left * width,
-        top: eggInit.top * height,
-        width: eggInit.width * width,
-        height: eggInit.height * height,
+class Snake {
+    constructor(snakeBody, size, direction) {
+        this.direction = direction;
+        this.size = size;
+        this.snakeBody = snakeBody.length > 0 && snakeBody.map(pos => ({ left: pos.left * size, top: pos.top * size }));
     }
-}
-
-/**
- * @description: 根据蛇头方向生成蛇的DOM的模板字符串
- * @param {*} direction 蛇头方向
- * @return {*} 蛇的模板字符串
- */
-function snakeTemplateCreate(direction) {
-    let template = '', transformDeg = 0;
-    switch (direction) {
-        case 'right':
-            transformDeg = 0
-            break;
-        case 'down':
-            transformDeg = 90
-            break;
-        case 'left':
-            transformDeg = 180
-            break;
-        case 'up':
-            transformDeg = -90
-            break;
-    }
-    template = snake.reduce((prev, next, currentIndex) => {
-        if (currentIndex === 0) {
-            template = prev + `<div class="snake-head snake" 
-        style="left:${next.left}px;top:${next.top}px;border-width:${next.width / 2}px;transform: rotate(${transformDeg}deg);"></div>
-        `
-        } else {
-            template = prev + `<div class="snake-body snake" 
-        style="left:${next.left}px;top:${next.top}px;width:${next.width}px;height:${next.height}px;transform: rotate(${transformDeg}deg);"></div>`
+    render() {
+        let template = '', transformDeg = 0;
+        switch (this.direction) {
+            case 'right':
+                transformDeg = 0
+                break;
+            case 'down':
+                transformDeg = 90
+                break;
+            case 'left':
+                transformDeg = 180
+                break;
+            case 'up':
+                transformDeg = -90
+                break;
         }
-        return template
-    }, '');
-    return template;
-}
-
-/**
- * @description: 根据蛋的大小和位置创建蛋的 DOM 节点
- * @return {HTMLElement} 蛋的 DOM 节点
- */
-function eggDomCreate() {
-    const div = document.createElement('div');
-    div.innerHTML = `<div class ='egg' style="left:${egg.left}px;top:${egg.top}px;width:${egg.width}px;height:${egg.height}px">`;
-    return div.children[0];
-}
-
-/**
- * @description: 将蛇和蛋的模板字符串渲染到页面上
- * @param {*} app DOM结构挂载的节点
- * @param {*} snake snake 的数据
- * @param {*} egg egg 的数据
- */
-function render(app, direction = 'right') {
-    const snakeTemplate = snakeTemplateCreate(direction);
-    const eggDom = eggDomCreate();
-    app.innerHTML = snakeTemplate;
-    app.appendChild(eggDom);
-}
-
-/**
- * @description: 根据移动方向在蛇尾添加一格表示蛇已经吃到蛋，通过 push 方式向数组添加一项
- * @param {*} width 地图等分后每个小块的宽
- * @param {*} height 地图等分后每个小块的高
- */
-function snakeEatEgg(width, height) {//在蛇尾部生成一个位置
-    let lens = snake.length, finallySnakes;
-    const prev = snake[lens - 2];//蛇尾部倒数第二个
-    const next = snake[lens - 1];//蛇尾部倒数第一个
-    if (prev.top === next.top && prev.left < next.left) {//向左运动
-        finallySnakes = { ...next, left: next.left + width }
-    } else if (prev.top === next.top && prev.left > next.left) {//向右运动
-        finallySnakes = { ...next, left: next.left - width }
-    } else if (prev.left === next.left && prev.top > next.top) {//向下运动
-        finallySnakes = { ...next, top: next.top - height }
-    } else {//向上运动
-        finallySnakes = { ...next, top: next.top + height }
+        return this.snakeBody.reduce((prev, next, currentIndex) => {
+            if (currentIndex === 0) {
+                template = prev + `<div class="snake-head snake" 
+            style="left:${next.left}px;top:${next.top}px;border-width:${this.size / 2}px;transform: rotate(${transformDeg}deg);"></div>
+            `
+            } else {
+                template = prev + `<div class="snake-body snake" 
+            style="left:${next.left}px;top:${next.top}px;width:${this.size}px;height:${this.size}px;transform: rotate(${transformDeg}deg);"></div>`
+            }
+            return template
+        }, '');
     }
-    snake.push(finallySnakes);
+    nextStep() {
+        // todo 请在下方补充代码，完成描述中的功能
+        // 定义蛇头下一步移动的位置，蛇身跟着蛇头移动
 
-}
-
-/**
- * @description: 定义蛇头下一步移动的位置，蛇身跟着蛇头移动，蛇头同时判断是否吃到蛋或者是否撞墙，吃到蛋在蛇尾添加一格，重新生成蛋的位置
- * @param {*} width  地图等分后每个小块的宽
- * @param {*} height  地图等分后每个小块的高
- * @param {*} direction 蛇头移动的方向
- */
-function move(width, height, direction) {
-    // todo 请在下方补充代码，完成描述中的功能
-
-}
-/**
- * @description: 判断蛇是否吃到蛋
- * @return {boolean}
- */
-function isArriveEgg() {
-    let isArrive = false;
-    if (snake[0].left === egg.left && snake[0].top === egg.top) isArrive = true;
-    return isArrive
-}
-/**
- * @description: 判断蛇是否撞墙
- * @return {boolean}
- */
-function isArriveWall(width, height) {
-    // 判断是否撞墙
-
-    if (snake[0].left >= width * rate ||
-        snake[0].top >= height * rate ||
-        snake[0].left < 0 ||
-        snake[0].top < 0) isEnd = true;
-    // 判断是否撞自己
-    for (let i = 1; i < snake.length; i++) {
-        if (snake[0].left == snake[i].left && snake[0].top == snake[i].top) {
-            isEnd = true;
-            break;
+    }
+    snakeGrowUp() {
+        let snake = this.snakeBody;
+        let lens = snake.length;
+        let snakeTail;
+        const prev = snake[lens - 2];//蛇尾部倒数第二个
+        const next = snake[lens - 1];//蛇尾部倒数第一个
+        if (prev.top === next.top && prev.left < next.left) {//向左运动
+            snakeTail = { ...next, left: next.left + this.size }
+        } else if (prev.top === next.top && prev.left > next.left) {//向右运动
+            snakeTail = { ...next, left: next.left - this.size }
+        } else if (prev.left === next.left && prev.top > next.top) {//向下运动
+            snakeTail = { ...next, top: next.top - this.size }
+        } else {//向上运动
+            snakeTail = { ...next, top: next.top + this.size }
         }
+        this.snakeBody.push(snakeTail);
+        this.render();
     }
-    return isEnd;
-}
-function autoMove(width, height, direction) {
-    timer = setInterval(() => {
-        move(width, height, direction);
+    isArriveWall() {
+        const snake = this.snakeBody;
+        let isEnd;
         // 判断是否撞墙
-        if (isArriveWall(width, height)) {
-            endGame();
-            return
+        if (snake[0].left >= this.size * MAPSIZE ||
+            snake[0].top >= this.size * MAPSIZE ||
+            snake[0].left < 0 ||
+            snake[0].top < 0) isEnd = true;
+        // 判断是否撞自己
+        for (let i = 1; i < snake.length; i++) {
+            if (snake[0].left == snake[i].left && snake[0].top == snake[i].top) {
+                isEnd = true;
+                break;
+            }
         }
-        render(app, direction);
-    }, Math.floor(1000 / snakeSpeed));
+        return isEnd;
+    }
+    changeSnakeDirection(direction) {
+        this.direction = direction;
+    }
 }
 
-function endGameDomCreate() {
-    const div = document.createElement('div');
-    div.innerHTML = `<div class="cover">
-        <div class="content">游戏结束，得分${snake.length - 3}</div>
-    </div>`;
-    return div.children[0];
-}
-function endGame() {
-    timer && clearInterval(timer);
-    const endGameDom = endGameDomCreate();
-    App.parentNode.appendChild(endGameDom);
-    endGameDom.addEventListener('click', () => {
-        App.parentNode.removeChild(endGameDom);
-        init(App, rate, snakeSpeed);
-        isEnd = false;
-    });
+class Egg {
+    constructor(size) {
+        // this.position = { left: getRandom(MAPSIZE) * size, top: getRandom(MAPSIZE) * size };
+        this.position = { left: 8 * size, top: 0 * size };
+        this.size = size;
+    }
+    render() {
+        const div = document.createElement('div');
+        div.innerHTML = `<div class ='egg' style="left:${this.position.left}px;top:${this.position.top}px;width:${this.size}px;height:${this.size}px">`;
+        return div.children[0];
+    }
+    flushed() {
+        this.position = { left: getRandom(MAPSIZE) * this.size, top: getRandom(MAPSIZE) * this.size };
+    }
 }
 
-/**
- * @description: 通过键盘点击决定蛇移动的方向
- */
-function initEvent(width, height) {
+function isArriveEgg(snake, egg) {
+    const snakeBody = snake.snakeBody;
+    return snakeBody[0].left === egg.position.left && snakeBody[0].top === egg.position.top;
+}
+
+const MAPSIZE = 30;
+let timer;
+
+function init(app) {
+    const snake = new Snake([{ left: 2, top: 0 }, { left: 1, top: 0 }, { left: 0, top: 0 }], 20);
+    const egg = new Egg(20);
+    render(app, snake, egg);
+    let direction;
     document.addEventListener('keydown', (e) => {
         if ((e.key === "ArrowUp" || e.key.toLocaleLowerCase() === "w")) {
             direction != 'down' && (direction = 'up');
@@ -215,22 +118,48 @@ function initEvent(width, height) {
             direction != 'left' && (direction = 'right');
         } else if ((e.key === "ArrowLeft" || e.key.toLocaleLowerCase() === "a")) {
             direction != 'right' && (direction = 'left');
+        } else {
+            return
         }
-        if (!direction || isEnd) return
+        snake.changeSnakeDirection(direction);
         timer && clearInterval(timer);
-        autoMove(width, height, direction);
+        direction && autoMove(app, snake, egg);
     })
 }
-
-function init(app, dot = 30, speed = 5) {
-    App = app;
-    let { width, height } = app.getBoundingClientRect();
-    width = width / rate;
-    height = height / rate;
-    dot && (rate = dot);
-    speed && (snakeSpeed = speed);
-    snakeConfig(width, height);
-    eggConfig(width, height);
-    render(app);
-    initEvent(width, height);
+function autoMove(app, snake, egg) {
+    timer = setInterval(() => {
+        snake.nextStep();
+        if(isArriveEgg(snake, egg)){
+            snake.snakeGrowUp();
+            egg.flushed();
+        }
+        // 判断是否撞墙
+        if (snake.isArriveWall()) {
+            endGame(app,snake);
+        } else {
+            render(app, snake, egg);
+        }
+    }, Math.floor(1000 / 5));
 }
+function render(app, snake, egg) {
+    const snakeTemplate = snake.render();
+    const eggDom = egg.render();
+    app.innerHTML = snakeTemplate;
+    app.appendChild(eggDom);
+}
+
+function endGame(App,snake) {
+    timer && clearInterval(timer);
+    const div = document.createElement('div');
+    div.innerHTML = `<div class="cover">
+        <div class="content">游戏结束，得分${snake.snakeBody.length - 3}</div>
+    </div>`;
+    const endGameDom = div.children[0];
+    App.parentNode.appendChild(endGameDom);
+    endGameDom.addEventListener('click', () => {
+        App.parentNode.removeChild(endGameDom);
+        init(App);
+    });
+}
+
+
