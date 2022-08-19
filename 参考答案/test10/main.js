@@ -146,13 +146,13 @@ function getAroundAndCount(arr, { row, col }) {
 }
 // 定义一个二维数组，初始时默认为 false,扫雷数组的某项被确认后为 true
 const flagData = new Array(9).fill('').map(() => new Array(9).fill(false));
-function getMineArr(arr, { row, col }) {
+function mineSweeperAlgorithms(arr, { row, col }) {
     if (flagData[row][col]) return
     flagData[row][col] = true;
 
     const { positionWithoutMineArr, count } = getAroundAndCount(arr, { row, col });
     positionWithoutMineArr.forEach((around) => {
-        count == 0 && getMineArr(arr, around)
+        count == 0 && mineSweeperAlgorithms(arr, around)
     })
 
 }
@@ -167,7 +167,7 @@ function initEvent() {
             endRender();
             return
         }
-        getMineArr(arr, { row, col })
+        mineSweeperAlgorithms(arr, { row, col })
         hideMineArr = arr.map(arrs => arrs.map(item => item === 'X' ? '' : item))
         render(hideMineArr);
         initEvent();
