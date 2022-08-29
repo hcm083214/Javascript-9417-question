@@ -2,7 +2,7 @@ const incantations = "芝麻开门";
 function init(el) {
     document.querySelector('.wrapper .btn').addEventListener('click', () => {
         mPrompt().then(res => {
-            console.log(res);
+            document.querySelector(".msg").innerText='密码正确';
             if(res === incantations){
                 document.querySelectorAll('#door .doors')[0].classList.add('door-left');
                 document.querySelectorAll('#door .doors')[1].classList.add('door-right');

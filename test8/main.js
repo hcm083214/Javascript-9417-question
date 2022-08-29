@@ -25,7 +25,7 @@ class RequestControl {
         this.requestQueue.push(request);
     }
     run() {
-        // todo 控制同一时间可以发起最大的最大请求数 = max,每发送一次请求占用一次发起次数，当 max 值为0时不发送请求
+        // todo 控制同一时间可以发起最大的最大请求数 = max,每发送一次请求占用一次发起次数，当 max 值为0时所有请求已完成发送
 
     }
 }
