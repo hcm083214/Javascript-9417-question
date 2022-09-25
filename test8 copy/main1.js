@@ -2,23 +2,21 @@
 function createRequest(i) {
     return function () {
         return new Promise((resolve, reject) => {
-            const start = Date.now();
             setTimeout(() => {
                 if (Math.random() >= 0.05) {
-                    resolve(`第${i + 1}曲率飞船达到光速，成功逃离，用时${Date.now() - start}`);
+                    resolve(`第${i}曲率飞船达到光速，成功逃离`);
                 } else {
-                    reject(`第${i + 1}曲率飞船出现故障，无法达到光速，用时${Date.now() - start}`);
+                    reject(`第${i}曲率飞船出现故障，无法达到光速`);
                 }
-            }, 3000 + i * 100)
+            }, 3000)
         })
     }
 }
 
 class RequestControl {
-    constructor({ max, el }) {
+    constructor({ max }) {
         this.max = max;
         this.requestQueue = [];
-        this.el = document.querySelector(el)
         setTimeout(() => {
             this.requestQueue.length > 0 && this.run();
         })
@@ -27,24 +25,31 @@ class RequestControl {
     addRequest(request) {
         this.requestQueue.push(request);
     }
-    run() {
+    async run() {
         // todo 控制同一时间可以发起最大的最大请求数 = max,每发送一次请求占用一次发起次数，当 max 值为0时所有请求已完成发送
+        let newA = fenge(this.requestQueue, this.max);
+        for (let i = 0; i < newA.length; i++) {
+            await Promise.allSettled(newA[i].map(item => item.call())).then(res => {
+                console.log(res.map(item => item.value ? `success ${item.value} ${Date.now()-this.startTime}` : `fail ${item.reason}`).toString().replace(/\,/g, '\n'))
+            });
+        }
 
-    }
-    render(context) {
-        // 用来将结果渲染到页面
-        const childNode = document.createElement("li");
-        childNode.innerText = context;
-        this.el.appendChild(childNode);
     }
 }
-
-const requestControl = new RequestControl({ max: 10, el: "#app" })
+// arr是原数组，N是想分成多少个
+function fenge(arr, N) {
+    // console.log(arr, N)
+    var result = [];
+    for (var i = 0; i < arr.length; i += N) {
+        result.push(arr.slice(i, i + N));
+    }
+    return result;
+}
+const requestControl = new RequestControl({ max: 10 })
 for (let i = 0; i < 25; i++) {
     const request = createRequest(i);
     requestControl.addRequest(request);
 }
-module.exports = {
+module.exports={
     requestControl
 }
-

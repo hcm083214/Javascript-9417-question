@@ -12,7 +12,7 @@ const arr = [
 ]; 
 */
 let root;
-// 初始扫雷数组，保存地雷的位置
+// 地雷数组，保存地雷的位置
 const arr = [
     ['', '', '', '', '', 'X', 'X', '', ''],
     ['', '', '', 'X', '', 'X', '', '', 'X'],
@@ -101,7 +101,7 @@ function render(mineArr) {
 /**
  * @description: 点到雷游戏结束
  */
-function endRender() {
+function GameOver() {
     const div = document.createElement('div');
     div.innerHTML = `<div class="cover">
         <div class="content">游戏结束</div>
@@ -162,17 +162,22 @@ function mineSweeperAlgorithms(arr, { row, col }) {
 
 let hideMineArr = arr;
 function initEvent() {
+    // 为每个格子绑定点击事件
     document.querySelector('table').addEventListener('click', (e) => {
         if (e.target.nodeName !== 'TD') return
         const row = Number(e.target.dataset.row);
         const col = Number(e.target.dataset.col);
         if (arr[row][col] === 'X') {
-            endRender();
+            GameOver();
             return
         }
+        // 扫雷算法
         mineSweeperAlgorithms(arr, { row, col })
-        hideMineArr = arr.map(arrs => arrs.map(item => item === 'X' ? '' : item))
+        // 数组转化，为 "X" 的字符转变为空字符串
+        hideMineArr = arr.map(arrs => arrs.map(item => item === 'X' ? '' : item));
+        // 将转化后的数组渲染到页面，形成扫雷的界面
         render(hideMineArr);
+        // 页面重新为每个格子绑定点击事件
         initEvent();
     })
 }
